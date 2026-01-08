@@ -1,8 +1,8 @@
 # this-little-wiggy
 
-> "Lisa gives Ralph the plan. Ralph executes it."
+> "Mayor Quimby gives Ralph the instructions. Ralph executes them."
 
-A Claude Code plugin that prepares prompts for the [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) loop plugin. Named after The Simpsons episode where Lisa gives Ralph a plan to execute.
+A Claude Code plugin that prepares prompts for the [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) loop plugin. Named after The Simpsons episode where Mayor Quimby desperately gives Ralph instructions at the electric chair controls.
 
 ## What It Does
 
@@ -102,7 +102,7 @@ User prompt
 
 ## The Simpsons Reference
 
-Named after "This Little Wiggy" (S9E18) where Lisa gives Ralph instructions and a plan. Ralph follows the plan and executes it - just like this plugin prepares plans for the ralph-wiggum loop to execute.
+Named after "This Little Wiggy" (S9E18) where Mayor Quimby ends up at Ralph's mercy at the electric chair controls. Quimby desperately gives Ralph clear instructions - and the tension of whether Ralph will execute them correctly mirrors the autonomous loop: you give it a well-structured plan and hope it completes successfully.
 
 ## License
 

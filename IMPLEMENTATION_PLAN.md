@@ -1,6 +1,6 @@
 # this-little-wiggy Implementation Plan
 
-> "Lisa gives Ralph the plan. Ralph executes it." - This plugin prepares prompts for the ralph-wiggum loop plugin.
+> "Mayor Quimby gives Ralph the instructions. Ralph executes them." - This plugin prepares prompts for the ralph-wiggum loop plugin.
 
 A Claude Code plugin that intercepts complex tasks, wraps them in the proper Ralph Wiggum format with success criteria, and hands off to `/ralph-loop` for autonomous execution.
 

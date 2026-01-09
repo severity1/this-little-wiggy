@@ -41,31 +41,27 @@ Substitute `{task}` with the original user request that was passed to this skill
 Execute the resulting command. For example, if the user's task was "Build a REST API for todos" and the config contains:
 
 ```
-/ralph-loop "{task}
+/ralph-loop:ralph-loop --max-iterations 10 --completion-promise "COMPLETE" "{task}
 
-Success criteria:
-- Build passes: go build ./... (exit 0)
-- Lint clean: golangci-lint run (no errors)
-- Tests pass: go test ./... (all green)
+When complete:
+- Build succeeds
+- Lint passes
+- All tests pass
 
-Output <promise>COMPLETE</promise> when done." \
---max-iterations 30 \
---completion-promise "COMPLETE"
+Output <promise>COMPLETE</promise> when done."
 ```
 
 The executed command becomes:
 
 ```
-/ralph-loop "Build a REST API for todos
+/ralph-loop:ralph-loop --max-iterations 10 --completion-promise "COMPLETE" "Build a REST API for todos
 
-Success criteria:
-- Build passes: go build ./... (exit 0)
-- Lint clean: golangci-lint run (no errors)
-- Tests pass: go test ./... (all green)
+When complete:
+- Build succeeds
+- Lint passes
+- All tests pass
 
-Output <promise>COMPLETE</promise> when done." \
---max-iterations 30 \
---completion-promise "COMPLETE"
+Output <promise>COMPLETE</promise> when done."
 ```
 
 ## Important Notes

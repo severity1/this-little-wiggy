@@ -2,23 +2,32 @@
 
 > "Mayor Quimby gives Ralph the instructions. Ralph executes them."
 
-A Claude Code plugin that prepares prompts for the [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) loop plugin.
+Type vibes, ship autonomy. Detects complex implementation tasks and wraps them in [ralph-loop](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-loop) format with project-specific completion criteria.
+
+## Why?
+
+You've already curated your workflows - slash commands, TDD prompts, issue references. Why write more prompts just to make them ralph-loop compatible?
+
+this-little-wiggy lets you keep using your established workflows. Your existing prompts automatically get wrapped in ralph-loop format when they're complex enough to benefit from autonomous execution.
 
 ## What It Does
 
-Intercepts complex tasks and wraps them with project-specific completion criteria for autonomous execution.
+Intercepts complex implementation tasks and wraps them with project-specific completion criteria for autonomous execution.
 
-**Before**: You manually structure prompts with completion markers
+**Before**: Manually structure every prompt with ralph-loop syntax and completion markers
 
-**After**: Just type naturally - this-little-wiggy formats it for Ralph
+**After**: Use your existing slash commands and prompts - this-little-wiggy handles the wrapping
 
 ## Quick Example
 
 ```bash
-# You type:
+# You type your natural prompt:
 claude "build a REST API for todos"
 
-# this-little-wiggy generates:
+# Or use your existing slash commands:
+claude "/tdd phase1"
+
+# this-little-wiggy wraps it for ralph-loop:
 /ralph-loop:ralph-loop --max-iterations 10 --completion-promise "COMPLETE" "build a REST API for todos
 
 When complete:
@@ -31,13 +40,49 @@ Output <promise>COMPLETE</promise> when done."
 
 ## Installation
 
+**Requirements:**
+- Claude Code 2.0.22+
+- [ralph-loop](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-loop) plugin
+
+### Option 1: Via Marketplace (Recommended)
+
+**1. Add the marketplace:**
 ```bash
-# From the this-little-wiggy directory
-claude plugin marketplace add "$(pwd)/.dev-marketplace/.claude-plugin/marketplace.json"
+claude plugin marketplace add severity1/severity1-marketplace
+```
+
+**2. Install the plugin:**
+```bash
+claude plugin install this-little-wiggy@severity1-marketplace
+```
+
+**3. Restart Claude Code**
+
+Verify installation with `/plugin` command. You should see the this-little-wiggy plugin listed.
+
+### Option 2: Local Plugin Installation (for Development)
+
+**1. Clone the repository:**
+```bash
+git clone https://github.com/severity1/this-little-wiggy.git
+cd this-little-wiggy
+```
+
+**2. Add the local marketplace:**
+```bash
+claude plugin marketplace add /absolute/path/to/this-little-wiggy/.dev-marketplace/.claude-plugin/marketplace.json
+```
+
+Replace `/absolute/path/to/` with the actual path where you cloned the repository.
+
+**3. Install the plugin:**
+```bash
 claude plugin install this-little-wiggy@local-dev
 ```
 
-**Requires**: [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) plugin
+**4. Restart Claude Code**
+
+Verify installation with `/plugin` command. You should see "1 plugin available, 1 already installed".
 
 ## Setup
 
@@ -56,7 +101,8 @@ The wizard:
 **Normal** - complex tasks auto-detected:
 ```bash
 claude "implement user authentication"
-claude "refactor the payment module"
+claude "/tdd phase1"
+claude "/tdd GH issue 32"
 ```
 
 **Bypass**:
@@ -85,8 +131,10 @@ ralphWrapper: |
 ## Architecture
 
 ```
-User prompt → Hook → Task Evaluator (haiku) → Task Analyzer → /ralph-loop:ralph-loop
+User prompt → Hook (prompt-evaluator.py) → RALPH-LOOP DIRECTIVE → Claude executes /ralph-loop:ralph-loop
 ```
+
+The hook reads your project config and wraps prompts with completion criteria. Claude then evaluates whether to execute the wrapped prompt based on task complexity.
 
 ## Testing
 

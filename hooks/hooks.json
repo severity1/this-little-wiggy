@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "description": "Detects complex tasks and formats them for ralph-loop",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/prompt-evaluator.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

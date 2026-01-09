@@ -1,0 +1,9 @@
+{
+  "name": "this-little-wiggy",
+  "description": "Formats complex tasks with quality gates for ralph-wiggum autonomous loop",
+  "version": "0.1.0",
+  "author": {
+    "name": "severity1"
+  },
+  "license": "MIT"
+}

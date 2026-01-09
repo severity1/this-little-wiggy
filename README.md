@@ -2,18 +2,15 @@
 
 > "Mayor Quimby gives Ralph the instructions. Ralph executes them."
 
-A Claude Code plugin that prepares prompts for the [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) loop plugin. Named after The Simpsons episode where Mayor Quimby desperately gives Ralph instructions at the electric chair controls.
+A Claude Code plugin that prepares prompts for the [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) loop plugin.
 
 ## What It Does
 
-Intercepts complex multi-step tasks and automatically:
-1. Detects if a task would benefit from autonomous iteration
-2. Wraps it in the proper Ralph Wiggum format with success criteria
-3. Hands off to `/ralph-loop` for autonomous execution
+Intercepts complex tasks and wraps them with project-specific completion criteria for autonomous execution.
 
-**Before**: You manually structure prompts with phases and completion markers
+**Before**: You manually structure prompts with completion markers
 
-**After**: Just type your task naturally - this-little-wiggy formats it for Ralph
+**After**: Just type naturally - this-little-wiggy formats it for Ralph
 
 ## Quick Example
 
@@ -21,88 +18,81 @@ Intercepts complex multi-step tasks and automatically:
 # You type:
 claude "build a REST API for todos"
 
-# this-little-wiggy detects complex task, generates:
-/ralph-loop "Build a REST API for todos.
+# this-little-wiggy generates:
+/ralph-loop:ralph-loop --max-iterations 10 --completion-promise "COMPLETE" "build a REST API for todos
 
-Phases:
-Phase 1: Setup project structure
-Phase 2: Implement CRUD endpoints
-Phase 3: Add validation
-Phase 4: Write tests
+When complete:
+- Tests pass
+- Lint passes
+- Build succeeds
 
-Verification: uv run pytest
-
-<promise>COMPLETE</promise>
-" --max-iterations 30 --completion-promise "COMPLETE"
+Output <promise>COMPLETE</promise> when done."
 ```
 
 ## Installation
 
 ```bash
-# Add marketplace (coming soon)
-claude plugin marketplace add severity1/claude-code-marketplace
-
-# Install
-claude plugin install this-little-wiggy@claude-code-marketplace
+# From the this-little-wiggy directory
+claude plugin marketplace add "$(pwd)/.dev-marketplace/.claude-plugin/marketplace.json"
+claude plugin install this-little-wiggy@local-dev
 ```
 
 **Requires**: [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) plugin
 
 ## Setup
 
-Run the init wizard to configure your project:
-
 ```bash
 /this-little-wiggy:init
 ```
 
-The wizard asks:
-- Project type (API, CLI, library, etc.)
-- Test command (pytest, npm test, etc.)
-- Default iteration limit
-- Phase style (multi-phase, TDD, single)
-
-Saves to `.claude/this-little-wiggy/config.json`
+The wizard:
+1. Explores your codebase to discover completion criteria
+2. Asks for max iterations (budget-based: 5/10/20/30)
+3. Lets you validate the discovered criteria
+4. Saves config to `.claude/this-little-wiggy/config.yml`
 
 ## Usage
 
-**Normal use** - complex tasks auto-detected and formatted:
+**Normal** - complex tasks auto-detected:
 ```bash
-claude "implement user authentication with JWT"
+claude "implement user authentication"
 claude "refactor the payment module"
-claude "add comprehensive test coverage"
 ```
 
-**Bypass** - skip formatting:
+**Bypass**:
 ```bash
-claude "* just fix this one line"  # * prefix bypasses
-claude "/help"                      # slash commands bypass
+claude "* just fix this one line"    # * prefix bypasses
+claude "/ralph-loop:ralph-loop ..."             # already wrapped
 ```
 
-## How It Works
+## Config
+
+```yaml
+# .claude/this-little-wiggy/config.yml
+defaultMaxIterations: 10
+
+ralphWrapper: |
+  /ralph-loop:ralph-loop --max-iterations 10 --completion-promise "COMPLETE" "{task}
+
+  When complete:
+  - Tests pass
+  - Lint passes
+  - Build succeeds
+
+  Output <promise>COMPLETE</promise> when done."
+```
+
+## Architecture
 
 ```
-User prompt
-    │
-    v
-┌─────────────────────────┐
-│ UserPromptSubmit Hook   │
-│ - Detect complex task   │
-│ - Load config.json      │
-│ - Generate Ralph format │
-└─────────────────────────┘
-    │
-    v
-/ralph-loop (autonomous execution)
+User prompt → Hook → Task Evaluator (haiku) → Task Analyzer → /ralph-loop:ralph-loop
 ```
 
-## Status
+## Testing
 
-**Work in Progress** - See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for details.
-
-## The Simpsons Reference
-
-Named after "This Little Wiggy" (S9E18) where Mayor Quimby ends up at Ralph's mercy at the electric chair controls. Quimby desperately gives Ralph clear instructions - and the tension of whether Ralph will execute them correctly mirrors the autonomous loop: you give it a well-structured plan and hope it completes successfully.
+```bash
+uv run pytest tests/ -v
+```
 
 ## License
 

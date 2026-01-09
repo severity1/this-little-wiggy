@@ -89,22 +89,20 @@ def main() -> None:
     wrapped_prompt = wrapped_prompt.replace("`", "\\`")
     escaped_prompt = prompt.replace("\\", "\\\\").replace('"', '\\"')
 
-    evaluation_context = f"""TASK EVALUATION
+    evaluation_context = f"""RALPH-LOOP DIRECTIVE
 
-Original user request: "{escaped_prompt}"
+User request: "{escaped_prompt}"
 
-EVALUATE: Is this a complex task that benefits from autonomous execution with self-correction?
-
-PROCEED DIRECTLY if:
-- Simple questions, lookups, or explanations
-- Single-line fixes or typos
-- Reading/exploring code without making changes
-
-EXECUTE THIS WRAPPED PROMPT if complex (multi-step implementation, refactoring, multi-file changes):
+EXECUTE THIS PROMPT (do not modify or skip):
 
 {wrapped_prompt}
 
-If simple, proceed with the original request. If complex, execute the wrapped prompt above exactly as shown."""
+ONLY skip ralph-loop for:
+- Simple questions, lookups, explanations
+- Single-line typos or minor fixes
+- Reading/exploring code without changes
+
+All implementation tasks MUST use the wrapped prompt - this includes slash commands that write code, refactoring, multi-file changes, and feature work."""
 
     output_json(evaluation_context)
     sys.exit(0)

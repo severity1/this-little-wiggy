@@ -107,25 +107,25 @@ class TestEvaluationRequest:
     """Test that normal prompts trigger evaluation with wrapped prompt."""
 
     def test_normal_prompt_requests_evaluation(self):
-        """Normal prompts with config should show evaluation and wrapped prompt."""
+        """Normal prompts with config should show directive and wrapped prompt."""
         output = run_hook("build a REST API for todos", config_exists=True)
         context = output["hookSpecificOutput"]["additionalContext"]
-        assert "TASK EVALUATION" in context
+        assert "RALPH-LOOP DIRECTIVE" in context
         assert "build a REST API for todos" in context
         assert "/ralph-loop:ralph-loop" in context
 
     def test_slash_command_requests_evaluation(self):
-        """Other slash commands with config should request evaluation."""
+        """Other slash commands with config should get directive."""
         output = run_hook("/build-feature authentication", config_exists=True)
         context = output["hookSpecificOutput"]["additionalContext"]
-        assert "TASK EVALUATION" in context
+        assert "RALPH-LOOP DIRECTIVE" in context
         assert "/build-feature authentication" in context
 
     def test_special_characters_escaped(self):
         """Special characters in prompt should be properly escaped."""
         output = run_hook('Test with "quotes" and \\backslash', config_exists=True)
         context = output["hookSpecificOutput"]["additionalContext"]
-        assert "TASK EVALUATION" in context
+        assert "RALPH-LOOP DIRECTIVE" in context
 
     def test_wrapped_prompt_includes_task(self):
         """Wrapped prompt should include the original task."""

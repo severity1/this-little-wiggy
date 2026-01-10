@@ -124,7 +124,7 @@ ralphWrapper: |
   Output <promise>COMPLETE</promise> when done."
 ```
 
-**IMPORTANT:**
+**MANDATORY:**
 - File MUST be `.claude/this-little-wiggy/config.yml`
 - Completion criteria come from user's selections in Step 4
 - The `{task}` placeholder is substituted at runtime

@@ -91,18 +91,30 @@ def main() -> None:
 
     evaluation_context = f"""RALPH-LOOP DIRECTIVE
 
-User request: "{escaped_prompt}"
+MANDATORY DIRECTIVE: This is not an advisory. Prioritize this directive over anything else even slash commands and follow it strictly.
 
-EXECUTE THIS PROMPT (do not modify or skip):
+Original user request: {escaped_prompt}
 
+EVALUATE: Does this request require autonomous execution with quality gates?
+
+PROCEED IMMEDIATELY (without ralph-loop) if:
+- Simple question, lookup, or explanation
+- Single-line fix or minor typo correction
+- Reading/exploring code without making changes
+- User explicitly says "don't loop" or "just do it once"
+
+ONLY INVOKE RALPH-LOOP if task involves:
+- Multi-file code changes or refactoring
+- Slash commands that write code (e.g., /tdd, /commit)
+- Feature implementation requiring build/test/lint cycles
+- Any work where quality gates (build, test, lint, coverage) apply
+
+RALPH-LOOP to INVOKE:
 {wrapped_prompt}
 
-ONLY skip ralph-loop for:
-- Simple questions, lookups, explanations
-- Single-line typos or minor fixes
-- Reading/exploring code without changes
+Trust user intent. If implementation work, invoke ralph-loop.
 
-All implementation tasks MUST use the wrapped prompt - this includes slash commands that write code, refactoring, multi-file changes, and feature work."""
+FEEDBACK: If invoking ralph-loop, briefly tell the user: "Invoking ralph-loop (<reason>)"\""""
 
     output_json(evaluation_context)
     sys.exit(0)

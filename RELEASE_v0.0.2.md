@@ -6,36 +6,72 @@ We're excited to announce v0.0.2 of this-little-wiggy! This release focuses on m
 
 ### ✨ Intelligent Task Evaluation
 
-The hook now automatically evaluates task complexity before invoking ralph-loop:
+**Previously:** The hook wrapped every prompt and forced execution with ralph-loop
 
-- **Smart Detection**: Simple tasks execute normally without ralph-loop overhead
-- **Clear Feedback**: When ralph-loop is invoked, you'll see a clear announcement with rationale
-- **Better UX**: No more wrapping every task - only complex implementations get the autonomous treatment
+**Now:** The hook sends a MANDATORY DIRECTIVE that tells Claude to EVALUATE the task first
+
+The directive provides clear decision criteria:
+
+**PROCEED IMMEDIATELY (without ralph-loop):**
+- Simple questions, lookups, or explanations
+- Single-line fixes or minor typo corrections
+- Reading/exploring code without making changes
+- User explicitly says "don't loop" or "just do it once"
+
+**INVOKE RALPH-LOOP for:**
+- Multi-file code changes or refactoring
+- Slash commands that write code (e.g., /tdd, /commit)
+- Feature implementation requiring build/test/lint cycles
+- Any work where quality gates apply
+
+When ralph-loop IS invoked, Claude provides feedback: *"Invoking ralph-loop (reason)"*
 
 **Example:**
 ```bash
 # Simple task - executes directly
 claude "fix this typo"
 
-# Complex task - automatically wrapped with ralph-loop
+# Complex task - wrapped with ralph-loop + feedback
 claude "build a REST API for todos"
-> 🔄 Invoking ralph-loop for complex implementation task...
+> Invoking ralph-loop (multi-file implementation requiring quality gates)
 ```
+
+**Technical change:** Updated `scripts/prompt-evaluator.py` directive from "EXECUTE THIS PROMPT" to "EVALUATE: Does this request require autonomous execution with quality gates?"
 
 ### 🧹 Codebase Cleanup
 
-Removed **247 lines** of dead code to improve maintainability:
+Removed **247+ lines** of dead code to improve maintainability:
 
-- Deleted unused `task-evaluator` agent (never invoked in current architecture)
-- Removed bypassed `task-analyzer` skill
-- Cleaned up corresponding test classes
-- Fixed all ruff linting issues (import sorting, line length)
+- **Deleted `agents/task-evaluator.md` (50 lines)**: Was supposed to classify tasks, but the hook directive handles this more efficiently
+- **Deleted `skills/task-analyzer/SKILL.md` (72 lines)**: Bypassed by direct hook implementation
+- **Deleted `skills/task-analyzer/references/ralph-template.md` (53 lines)**: No longer needed
+- **Removed test classes (90 lines)**: Corresponding tests for deleted agent/skill
+- **Fixed ruff linting**: Import sorting and formatting issues
+
+The architecture is now simpler: User prompt → Hook evaluates → Claude decides → Execute (with or without ralph-loop)
 
 ### 📚 Documentation Improvements
 
-- Enhanced README with clearer slash command usage patterns
-- Added prefix pattern examples: `"Execute /tdd phase1"`
-- Explained why prefixes prevent premature slash command expansion
+**Slash Command Usage Pattern:**
+
+The README now explains why you need a prefix for slash commands:
+
+```bash
+# ❌ This expands the slash command BEFORE the hook sees it
+claude "/tdd phase1"
+
+# ✅ Prefix lets the hook wrap it first
+claude "Execute /tdd phase1"
+claude "Implement /tdd GH issue 32"
+```
+
+Without a prefix word, slash commands expand immediately in Claude Code, before the hook can evaluate them for ralph-loop wrapping.
+
+**Changes:**
+- Updated Quick Example to show prefix pattern
+- Added dedicated "Slash commands" usage section
+- Included explanation of why prefixes are necessary
+- Changed init command directive from "IMPORTANT" to "MANDATORY"
 
 ## 🔧 Technical Details
 

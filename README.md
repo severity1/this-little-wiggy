@@ -24,8 +24,8 @@ Intercepts complex implementation tasks and wraps them with project-specific com
 # You type your natural prompt:
 claude "build a REST API for todos"
 
-# Or use your existing slash commands:
-claude "/tdd phase1"
+# Or use slash commands with a prefix:
+claude "Execute /tdd phase1"
 
 # this-little-wiggy wraps it for ralph-loop:
 /ralph-loop:ralph-loop --max-iterations 10 --completion-promise "COMPLETE" "build a REST API for todos
@@ -98,12 +98,19 @@ The wizard:
 
 ## Usage
 
-**Normal** - complex tasks auto-detected:
+**Normal prompts** - complex tasks auto-detected:
 ```bash
 claude "implement user authentication"
-claude "/tdd phase1"
-claude "/tdd GH issue 32"
+claude "build a REST API for todos"
 ```
+
+**Slash commands** - prefix with a word to prevent premature expansion:
+```bash
+claude "Execute /tdd phase1"
+claude "Implement /tdd GH issue 32"
+```
+
+> **Why the prefix?** Without it, slash commands expand immediately before the hook can evaluate them. Adding "Execute", "Implement", or any word first lets the hook wrap the command with ralph-loop.
 
 **Bypass**:
 ```bash

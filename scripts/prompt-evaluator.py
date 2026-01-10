@@ -102,7 +102,8 @@ ONLY skip ralph-loop for:
 - Single-line typos or minor fixes
 - Reading/exploring code without changes
 
-All implementation tasks MUST use the wrapped prompt - this includes slash commands that write code, refactoring, multi-file changes, and feature work."""
+All implementation tasks MUST use the wrapped prompt - this includes slash commands
+that write code, refactoring, multi-file changes, and feature work."""
 
     output_json(evaluation_context)
     sys.exit(0)

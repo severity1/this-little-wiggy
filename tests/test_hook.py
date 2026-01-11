@@ -133,6 +133,26 @@ class TestEvaluationRequest:
         assert "implement user auth" in context
         assert "When complete:" in context
 
+    def test_task_criteria_instruction_present(self):
+        """Evaluation context should include task-specific criteria instruction."""
+        output = run_hook("add rate limiting", config_exists=True)
+        context = output["hookSpecificOutput"]["additionalContext"]
+        assert "BEFORE INVOKING" in context
+        assert "Task(model=" in context or "haiku" in context
+        assert "task-specific criteria" in context
+
+    def test_task_criteria_instruction_has_deduplication(self):
+        """Task criteria instruction should mention deduplication."""
+        output = run_hook("implement caching", config_exists=True)
+        context = output["hookSpecificOutput"]["additionalContext"]
+        assert "NOT duplicate" in context or "Do NOT duplicate" in context
+
+    def test_task_criteria_instruction_has_fallback(self):
+        """Task criteria instruction should have fallback for agent failure."""
+        output = run_hook("refactor auth module", config_exists=True)
+        context = output["hookSpecificOutput"]["additionalContext"]
+        assert "agent fails" in context or "UNCHANGED" in context
+
 
 class TestOutputFormat:
     """Test output JSON format."""

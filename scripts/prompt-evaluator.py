@@ -109,6 +109,10 @@ ONLY INVOKE RALPH-LOOP if task involves:
 - Feature implementation requiring build/test/lint cycles
 - Any work where quality gates (build, test, lint, coverage) apply
 
+BEFORE INVOKING: Use Task(model="haiku", subagent_type="Explore") to generate task-specific criteria.
+Agent prompt: "Task: [user request]. Template: [ralph-loop template below]. Explore codebase (5-10 files), generate 2-5 task-specific criteria, append after project criteria in 'When complete:' section. Do NOT duplicate existing criteria. Return enhanced template or UNCHANGED if no criteria found."
+If agent fails or returns UNCHANGED, use original template below.
+
 RALPH-LOOP to INVOKE:
 {wrapped_prompt}
 

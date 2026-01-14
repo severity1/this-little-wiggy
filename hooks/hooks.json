@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python -u \"${CLAUDE_PLUGIN_ROOT}/scripts/prompt-evaluator.py\"",
+            "command": "py -3 -u \"${CLAUDE_PLUGIN_ROOT}/scripts/prompt-evaluator.py\"",
             "timeout": 10
           }
         ]

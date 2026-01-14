@@ -29,7 +29,7 @@ def output_json(additional_context: str) -> None:
             "additionalContext": additional_context,
         }
     }
-    print(json.dumps(output))
+    print(json.dumps(output), flush=True)
 
 
 def pass_through(prompt: str) -> None:
@@ -64,9 +64,17 @@ def load_config() -> dict | None:
 
 def main() -> None:
     try:
+        # Handle Windows stdin encoding
+        if sys.platform == "win32":
+            import io
+            sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding="utf-8")
+
         input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
         print(f"Error: Invalid JSON input: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error reading input: {e}", file=sys.stderr)
         sys.exit(1)
 
     prompt = input_data.get("prompt", "")
@@ -132,4 +140,8 @@ FEEDBACK: If invoking ralph-loop, briefly tell the user: "Invoking ralph-loop (<
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"Unhandled error in prompt-evaluator: {e}", file=sys.stderr)
+        sys.exit(1)

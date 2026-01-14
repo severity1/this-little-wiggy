@@ -11,7 +11,14 @@ import os
 import sys
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+except ImportError:
+    print(
+        "Error: pyyaml is not installed. Install it with: pip install pyyaml",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 
 def output_json(additional_context: str) -> None:

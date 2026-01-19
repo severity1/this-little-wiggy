@@ -43,6 +43,9 @@ Output <promise>COMPLETE</promise> when done."
 **Requirements:**
 - Claude Code 2.0.22+
 - [ralph-loop](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-loop) plugin
+- Python 3.10+ with `pyyaml` installed (`pip install pyyaml`)
+
+> **Windows users:** Ensure Python is in your PATH and `pyyaml` is installed in the Python environment that Claude Code uses.
 
 ### Option 1: Via Marketplace (Recommended)
 

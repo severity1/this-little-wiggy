@@ -13,14 +13,9 @@ Interactive wizard to configure ralph-loop for this project.
 
 ### Step 1: Check Existing Config
 
-```!
-if [ -f ".claude/this-little-wiggy/config.yml" ]; then
-  echo "CONFIG_EXISTS"
-  cat .claude/this-little-wiggy/config.yml
-else
-  echo "NO_CONFIG"
-fi
-```
+Use the Read tool to check if `.claude/this-little-wiggy/config.yml` exists:
+- If the file exists, note its contents
+- If the file does not exist (Read returns an error), proceed to Step 2
 
 If config exists and `--force` was NOT provided in `$ARGUMENTS`:
 - Use AskUserQuestion: Overwrite, Merge, or Cancel
@@ -104,11 +99,7 @@ Only include questions where criteria were discovered.
 
 ### Step 5: Write Config
 
-```!
-mkdir -p .claude/this-little-wiggy
-```
-
-Write `.claude/this-little-wiggy/config.yml` with user's selections:
+Use the Write tool to create `.claude/this-little-wiggy/config.yml` with user's selections (the Write tool will automatically create parent directories if they don't exist):
 
 ```yaml
 defaultMaxIterations: 10
